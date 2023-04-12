@@ -1,0 +1,22 @@
+{
+  "name": "tucil3_13521091_13521141",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@googlemaps/js-api-loader": "^1.15.1",
+    "@react-google-maps/api": "^2.18.1",
+    "eslint": "8.38.0",
+    "eslint-config-next": "13.3.0",
+    
+    "next": "13.3.0",
+    "osm-api": "^1.0.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  }
+}

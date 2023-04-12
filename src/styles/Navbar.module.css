@@ -1,0 +1,32 @@
+.navbarContainer {
+    background-color: white;
+
+    position: fixed;
+
+    width: 100vw;
+    height: 100vh;
+
+
+	transition: top 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    
+
+    top: 80vh;
+    left: 0;
+}
+
+.navbarContainer.selected {
+    top: 0;
+}
+
+@media screen and (min-width : 720px) {
+    .navbarContainer {
+        top: 0;
+        left: -90vw;
+
+        transition:  left 0.6s cubic-bezier(0.25, 1, 0.5, 1) ;
+    }
+
+    .navbarContainer.selected {
+        left:  0;
+    }
+}
