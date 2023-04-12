@@ -1,7 +1,11 @@
-const Navbar = () => {
+import styles from '@/styles/Navbar.module.css'
+
+const Navbar = ({show}) => {
+
     return (
-        <div>
-            Enter
+        <div style={{visibility : show ? 'visible' : 'hidden'}}>''
+            Enterasdszzzzz
+            
         </div>
     );
 }
