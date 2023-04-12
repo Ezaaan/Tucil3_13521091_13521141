@@ -24,7 +24,40 @@ var testGraph = [
     ["iasi"           , "neamt"          , 87]
 ];
 
+var matrix = readFile('test.txt');
 result("arad", "bucharest", testGraph, createGraphMap, "UCS");
+
+function readFile(filepath){
+    const fs = require('fs');
+    var matrix = [];
+    console.log(matrix[0]);
+    const allFileContents = fs.readFileSync(filepath, 'utf-8');
+    var i = 0;
+    var nameArray = [];
+    var item = 0;
+    console.log(allFileContents);
+    allFileContents.split(/\r?\n/).forEach(line =>  {
+        var textLine = line.split(' ');
+        console.log(`Line from file: ${textLine}`);
+        for(let j = 0; j < textLine.length; j++){
+            var Insert = [];
+            if(i == 0){
+                nameArray[j] = textLine[j];
+                console.log(nameArray);
+            }else if(j != i - 1){
+                Insert.push(nameArray[j]);
+                Insert.push(nameArray[i - 1]);
+                Insert.push(textLine[j]);
+                matrix.push(Insert);
+                item++;
+                //console.log(matrix);
+            } 
+        }
+        i++;
+    });
+
+    return matrix;
+}
 
 function createPath(parent, current, value) {
     return {
