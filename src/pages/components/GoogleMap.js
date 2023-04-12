@@ -13,7 +13,7 @@ const getSimpangan = (elem) => {
         // if (el.toString() == "5024785997") {
         //   console.log(mapNode.get(el.toString()))
         // }
-        if (typeof(mapNode.get(el.toString())) !== "undefined") {
+        if (typeof(mapNode.get(el.toString())) !== "undefined" && element['nodes'].filter(x => x == el).length == 1) {
           mapNode.set(el.toString(), mapNode.get(el.toString()) + 1);
         } else {
           mapNode.set(el.toString(), 1);
@@ -27,23 +27,30 @@ const getSimpangan = (elem) => {
     }
   });
 
+  let result = new Array()
   console.log(mapNode)
   mapNode.forEach(
     (v, k) => {
-      if (v <= 1){
-        mapNode.delete(k)
+      if (v > 1){
+        // mapNode.delete(k)
+        result.push(k)
+        if (k == 5024785997) {
+          console.log(k, v)
+        }
       }
     }
   )
   console.log(mapNode)
+  console.log(result)
 
   mapNode.forEach(el => {
-    if (el.toString() == "5024785997") {
+    if (el == "5024785997") {
+      console.log(el)
         console.log(mapNode.get(el.toString()))
       }
     })
   // console.log(mapNode)
-  return mapNode.keys()
+  return result
 }
 
 const drawLines = (arrOfSimpangan, nodes, map) => {
@@ -168,7 +175,7 @@ const GoogleMap = () => {
           for (const x of simpangan) {
             js['elements'].forEach(el => {
               if (el['type'] == 'node' && el['id'] == x) {
-                console.log(el['id'], x)
+                // console.log(el['id'], x)
                 arrOfSimpangan.push(el)
               }
             })
