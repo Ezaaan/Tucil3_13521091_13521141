@@ -74,6 +74,14 @@ const GoogleMap = () => {
           }
 
           console.log(arrOfSimpangan)
+
+          arrOfSimpangan.slice(0, 21).forEach(e => {
+            new google.maps.Marker({
+              position: new google.maps.LatLng(e['lat'], e['lon']),
+              map,
+              title : `${e['user']}`
+            })
+          })
       })
       
     });
