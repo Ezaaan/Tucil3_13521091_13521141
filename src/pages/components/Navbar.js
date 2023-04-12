@@ -1,12 +1,21 @@
 import styles from '@/styles/Navbar.module.css'
 
-const Navbar = ({show}) => {
+import Navpath from './Navpath';
 
+const Navbar = ({show, func}) => {
     return (
-        <div style={{visibility : show ? 'visible' : 'hidden'}}>''
-            Enterasdszzzzz
-            
-        </div>
+        <>
+            <div className={styles.header}>
+                EFMap
+            </div>
+            <div className={`${styles.navbarContainer} ${show ? styles.selected : ' '}`} onClick={show ? null : func}>
+                EFMap
+                Menu
+
+                <Navpath desc={"Asal"} />
+                <Navpath desc={"Tujuan"} />
+            </div>
+        </>
     );
 }
 
