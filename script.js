@@ -156,6 +156,8 @@ function createGraphMap(graph){
         graphMap[current[0]][current[1]] = current[2];
         graphMap[current[1]][current[0]] = current[2];
     }
+    console.log("GRAPH MAP");
+    console.log(graphMap);
     return graphMap;
 }
 
@@ -237,14 +239,14 @@ function result(start, end, graph, func, method){
         var queue = [];
         queue.push(createPath(null, start, 0));
         var head = 0;
-        console.log("START QUEUE");
-        console.log(queue);
+        // console.log("START QUEUE");
+        // console.log(queue);
         var history = []
         //console.log(queue);
         while(queue.length > 0){
             var active = queue[0];
-            console.log("CURRENTLY ACTIVE");
-            console.log(active.current);
+            // console.log("CURRENTLY ACTIVE");
+            // console.log(active.current);
             queue.splice(0, 1);
             //head++;
 
@@ -261,8 +263,8 @@ function result(start, end, graph, func, method){
                 return active;
             }else{
                 var nextNodes = possibleNodes(graphMap, active.current);
-                console.log("POSSIBLE NEXT");
-                console.log(nextNodes);
+                // console.log("POSSIBLE NEXT");
+                // console.log(nextNodes);
                 //console.log(history);
                 for(let i = 0; i < nextNodes.length; i++){
                     if(!isExist(history, nextNodes[i])){
