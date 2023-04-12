@@ -13,16 +13,46 @@ const GoogleMap = () => {
     });
     let map;
     loader.load().then(() => {
-    const google = window.google;
+      const google = window.google;
       map = new google.maps.Map(googlemap.current, {
-        center: {lat: -6.891128501230697, lng: 107.61065909795593},
+        center: {lat: -6.89113, lng: 107.60878},
+        //https://api.openstreetmap.org/api/0.6/map?bbox=11.54,48.14,11.543,48.145
+        // https://master.apis.dev.openstreetmap.org/export#map=17/-6.89113/107.60878
+        //https://master.apis.dev.openstreetmap.org/api/0.6/map?bbox=11.54,48.14,11.543,48.145
+        //https://api.openstreetmap.org/api/0.6/map?bbox=107,-6,107.1,-5.9
         zoom: 17,
       });
+
+      map.addListener("click", async (mapsMouseEvent) => {
+        window.alert(mapsMouseEvent.latLng);
+        const bound = map.getBounds()
+        
+        window.alert(bound.getNorthEast().lat())
+        // window.alert(bound.toString())
+          const response = await fetch(`https://api.openstreetmap.org/api/0.6/map.json?bbox=${bound.getSouthWest().lng()},${bound.getSouthWest().lat()},${bound.getNorthEast().lng()},${bound.getNorthEast().lat()}`);
+          console.log(response)
+          const js = await response.json()
+          console.log(js) // ambile elements
+      })
+      
     });
+
+    
   });
 
+  // const userAction = async () => {
+  //   const response = await fetch('https://master.apis.dev.openstreetmap.org/api/0.6/map.json?bbox=11.54,48.14,11.543,48.145');
+  //   console.log(response)
+  //   const myJson = await response.json(); //extract JSON from the http response
+  //   // do something with myJson
+  //   console.log(myJson)
+  // }
+  // {/* <button onClick={userAction}>ASDJKAJDASHDJH</button> */}
   return (
-    <div id={styles.map} ref={googlemap} />
+    
+      <div id={styles.map} ref={googlemap}/>
+    
+    
   );
 }
 
