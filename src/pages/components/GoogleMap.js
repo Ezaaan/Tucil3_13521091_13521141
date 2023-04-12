@@ -156,7 +156,8 @@ const GoogleMap = () => {
         //https://master.apis.dev.openstreetmap.org/api/0.6/map?bbox=11.54,48.14,11.543,48.145
         //https://api.openstreetmap.org/api/0.6/map?bbox=107,-6,107.1,-5.9
         zoom: 17,
-        mapTypeId : "OSM"
+        mapTypeId : "OSM",
+        disableDefaultUI : true
       });
 
       map.mapTypes.set("OSM", new google.maps.ImageMapType({
