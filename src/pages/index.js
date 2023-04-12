@@ -5,6 +5,7 @@ import styles from '@/styles/Home.module.css'
 
 import Navbar from './components/Navbar'
 import GoogleMap from './components/GoogleMap'
+import { getSolution } from './script'
 
 import { useState } from 'react'
 

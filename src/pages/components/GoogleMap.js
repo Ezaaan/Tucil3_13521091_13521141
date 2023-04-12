@@ -5,7 +5,7 @@ import styles from '@/styles/GoogleMap.module.css'
 import * as OSM from "osm-api"
 
 const getSimpangan = (elem) => {
-  console.log(elem)
+  // console.log(elem)
   let mapNode = new Map();
   elem.forEach(element => {
     if (element['type'] == 'way') {
@@ -28,25 +28,25 @@ const getSimpangan = (elem) => {
   });
 
   let result = new Array()
-  console.log(mapNode)
+  // console.log(mapNode)
   mapNode.forEach(
     (v, k) => {
       if (v > 1){
         // mapNode.delete(k)
         result.push(k)
-        if (k == 5024785997) {
-          console.log(k, v)
-        }
+        // if (k == 5024785997) {
+        //   // console.log(k, v)
+        // }
       }
     }
   )
-  console.log(mapNode)
-  console.log(result)
+  // console.log(mapNode)
+  // console.log(result)
 
   mapNode.forEach(el => {
     if (el == "5024785997") {
-      console.log(el)
-        console.log(mapNode.get(el.toString()))
+      // console.log(el)
+      //   console.log(mapNode.get(el.toString()))
       }
     })
   // console.log(mapNode)
@@ -133,7 +133,7 @@ const drawNodes = (arrOfSimpangan, arrOfLines, map) => {
   arrOfSimpangan.forEach(el => {
     
     if (el['id'] == 5024785997) {
-        console.log('ini')
+        // console.log('ini')
       }
     })
 }
@@ -155,7 +155,7 @@ const GoogleMap = () => {
         // https://master.apis.dev.openstreetmap.org/export#map=17/-6.89113/107.60878
         //https://master.apis.dev.openstreetmap.org/api/0.6/map?bbox=11.54,48.14,11.543,48.145
         //https://api.openstreetmap.org/api/0.6/map?bbox=107,-6,107.1,-5.9
-        zoom: 17,
+        zoom: 18,
         mapTypeId : "OSM",
         disableDefaultUI : true
       });
@@ -175,10 +175,10 @@ const GoogleMap = () => {
           },
           tileSize: new google.maps.Size(256, 256),
           name: "OpenStreetMap",
-          maxZoom: 18
+          maxZoom: 19.5
       }));
 
-      map.addListener("click", async (mapsMouseEvent) => {
+      map.addListener("dragend", async (mapsMouseEvent) => {
         // window.alert(mapsMouseEvent.latLng);
         const bound = map.getBounds()
         
@@ -201,7 +201,7 @@ const GoogleMap = () => {
             })
           }
 
-          console.log(arrOfSimpangan)
+          console.log("final : " + arrOfSimpangan)
 
           // arrOfSimpangan.forEach(e => {
           //   // new google.maps.Marker({

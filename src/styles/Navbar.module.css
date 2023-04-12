@@ -17,6 +17,10 @@
     font-size: large;
 
     z-index: 999;
+
+    border-radius: 0 0 10px 10px;
+    
+    box-shadow: 0 7px 12px 1px gray;
 }
 
 .navbarContainer {
@@ -32,15 +36,22 @@
     justify-content: space-around;
     align-items: flex-start;
 
-	transition: top 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    padding: 3vh 0 0 0;
+
+	transition: top 0.6s cubic-bezier(0.25, 1, 0.5, 1), padding 0.6s cubic-bezier(0.25, 1, 0.5, 1);
     
 
-    top: 93vh;
+    top: 87vh;
     left: 0;
 
     z-index: 999;
+
+    border-radius: 10px 10px 0 0;
+
+    box-shadow: 0 -7px 12px 1px gray;
 }
 
-.navbarContainer.selected {
-    top: 7vh;
+.navbarContainer:hover {
+    padding: 8vh 0 0 0;
+    top: 77vh;
 }
