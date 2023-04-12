@@ -24,12 +24,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        tes
-        {/* <button onClick={() => {setNavShow(!navShow)}}>tombol!</button> */}
         <Navbar show={navShow} func={() => setNavShow(!navShow)}/> 
-        
         <GoogleMap />
-        
       </main>
     </>
   )
