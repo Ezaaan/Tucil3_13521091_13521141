@@ -2,9 +2,10 @@ import {useEffect, useRef} from 'react';
 import {Loader} from '@googlemaps/js-api-loader';
 
 import styles from '@/styles/GoogleMap.module.css'
+import * as OSM from "osm-api"
 
 const getSimpangan = (elem) => {
-  // console.log(elem)
+  console.log(elem)
   let mapNode = new Map();
   elem.forEach(element => {
     if (element['type'] == 'way') {
@@ -27,7 +28,7 @@ const getSimpangan = (elem) => {
     }
   )
   // console.log(mapNode)
-  return mapNode
+  return mapNode.keys()
 }
 
 const GoogleMap = () => {
@@ -56,12 +57,23 @@ const GoogleMap = () => {
         
         window.alert(bound.getNorthEast().lat())
         // window.alert(bound.toString())
-          // const response = await fetch(`https://api.openstreetmap.org/api/0.6/map.json?bbox=${bound.getSouthWest().lng()},${bound.getSouthWest().lat()},${bound.getNorthEast().lng()},${bound.getNorthEast().lat()}`);
-          const response = await fetch('https://master.apis.dev.openstreetmap.org/api/0.6/map.json?bbox=11.54,48.14,11.543,48.145');
+          const response = await fetch(`https://api.openstreetmap.org/api/0.6/map.json?bbox=${bound.getSouthWest().lng()},${bound.getSouthWest().lat()},${bound.getNorthEast().lng()},${bound.getNorthEast().lat()}`);
+          // const response = await fetch('https://master.apis.dev.openstreetmap.org/api/0.6/map.json?bbox=11.54,48.14,11.543,48.145');
           console.log(response)
           const js = await response.json()
           console.log(js) // ambile elements
-          getSimpangan(js["elements"])
+          const simpangan = getSimpangan(js["elements"])
+
+          let arrOfSimpangan = new Array()
+          for (const x of simpangan) {
+            js['elements'].forEach(el => {
+              if (el['type'] == 'node' && el['id'] == x) {
+                arrOfSimpangan.push(el)
+              }
+            })
+          }
+
+          console.log(arrOfSimpangan)
       })
       
     });
