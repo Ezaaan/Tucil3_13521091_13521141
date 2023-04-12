@@ -9,8 +9,8 @@ var testGraph = [
     ["mehadia"        , "drobeta"        , 75],
     ["drobeta"        , "craiova"        , 120],
     ["craiova"        , "pitesti"        , 138],
-    ["craiova"        , "rimnicu_vilcea" , 146],
-    ["sibiu"          , "rimnicu_vilcea" , 80],
+    ["craiova"        , "rimnicu vilcea" , 146],
+    ["sibiu"          , "rimnicu vilcea" , 80],
     ["rimnicu_vilcea" , "pitesti"        , 97],
     ["sibiu"          , "fagaras"        , 99],
     ["fagaras"        , "bucharest"      , 211],
@@ -25,44 +25,50 @@ var testGraph = [
 ];
 
 var nameTest = ["oradea", "zerind", "sibiu", "arad", "timisoara", "lugoj", "mehadia", "drobeta", 
-                "craiova", "pitesti", "rimnicu_vilcea", "fagaras", "bucharest", "giurgiu", "urziceni",
+                "craiova", "pitesti", "rimnicu vilcea", "fagaras", "bucharest", "giurgiu", "urziceni",
                 "hirsova", "eforie", "vaslui", "iasi", "neamt"];
 
 var eucToGoalTest = {"arad": 366, "bucharest": 0, "craiova": 160, "dobreta": 242, "eforie": 161, 
                     "fagaras": 176, "giurgiu": 77, "hirsova": 151, "iasi": 226, "lugoj": 244, "mehadia": 241,
-                    "neamt": 234, "oradea": 380, "pitesti": 10, "rimnicu_vilcea": 193, "sibiu": 253, "timisoara": 329,
+                    "neamt": 234, "oradea": 380, "pitesti": 10, "rimnicu vilcea": 193, "sibiu": 253, "timisoara": 329,
                     "urziceni": 80, "vaslui": 199, "zerind": 374};
 
 const prompt = require('prompt-sync')();
 
-
+// FOR DEBUGGING
+var nodeNames = nameTest;
+var nodeCoordinates = [];
+var eucToGoal = eucToGoalTest;
 
 // Initialize information matrices
-//var matrix = getMatrix('test.txt');
-var nodeNames = nameTest;//getNames('test.txt');
+var matrix = getMatrix('test.txt');
+console.log("MATRIX");
+console.log(matrix);
+var nodeNames = getNames('test.txt');
 var nodeCoordinates = [];
-var eucToGoal = eucToGoalTest;//{};
+var eucToGoal = {};
+
 
 // Insert coordinates of all nodes
-// for(let i = 0; i < nodeNames.length; i++){
-//     var coorX = prompt(`Coordinate X of ${nodeNames[i]}: `);
-//     var coorY = prompt(`Coordinate Y of ${nodeNames[i]}: `);
-//     nodeCoordinates.push({name: nodeNames[i], X: Number(coorX), Y: Number(coorY)});
-// }
+for(let i = 0; i < nodeNames.length; i++){
+    var coorX = prompt(`Coordinate X of ${nodeNames[i]}: `);
+    var coorY = prompt(`Coordinate Y of ${nodeNames[i]}: `);
+    nodeCoordinates.push({name: nodeNames[i], X: Number(coorX), Y: Number(coorY)});
+}
 
 // Get begin and goal nodes
 var begin = prompt("Start node: ");
 var goal = prompt('Goal node: ');
 
 // Get array of euclidean distances to goal
-// for(let i = 0; i < nodeNames.length; i++){
-//     eucToGoal[nodeNames[i]] = euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)]);
-//     //eucToGoal.push({name: nodeNames[i], euclidean: euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)])});
-// }
+for(let i = 0; i < nodeNames.length; i++){
+    eucToGoal[nodeNames[i]] = euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)]);
+    //eucToGoal.push({name: nodeNames[i], euclidean: euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)])});
+}
 //var goalCoor = nodeCoordinates[nodeNames.indexOf(goal)];
 
-var chosenMethod = prompt("What method do you want to use?");
-result(begin, goal, testGraph, createGraphMap, chosenMethod);
+var chosenMethod = prompt("What method do you want to use? ");
+result(begin, goal, matrix, createGraphMap, chosenMethod);
 
 function euclidean(start, end){
     let Xelement = Math.pow(Math.abs(start.X - end.X), 2);
@@ -73,12 +79,12 @@ function euclidean(start, end){
 function getMatrix(filepath){
     const fs = require('fs');
     var matrix = [];
-    console.log(matrix[0]);
+    //console.log(matrix[0]);
     const allFileContents = fs.readFileSync(filepath, 'utf-8');
     var i = 0;
     var nameArray = [];
     var item = 0;
-    console.log(allFileContents);
+    //console.log(allFileContents);
     allFileContents.split(/\r?\n/).forEach(line =>  {
         var textLine = line.split(' ');
         console.log(`Line from file: ${textLine}`);
@@ -86,8 +92,8 @@ function getMatrix(filepath){
             var Insert = [];
             if(i == 0){
                 nameArray[j] = textLine[j];
-                console.log(nameArray);
-            }else if(j != i - 1){
+                //console.log(nameArray);
+            }else if(j != i - 1 && textLine[j] > 0){
                 Insert.push(nameArray[j]);
                 Insert.push(nameArray[i - 1]);
                 Insert.push(textLine[j]);
@@ -105,15 +111,15 @@ function getMatrix(filepath){
 function getNames(filepath){
     const fs = require('fs');
     var matrix = [];
-    console.log(matrix[0]);
+    //console.log(matrix[0]);
     const allFileContents = fs.readFileSync(filepath, 'utf-8');
     var i = 0;
     var nameArray = [];
     var item = 0;
-    console.log(allFileContents);
+    //console.log(allFileContents);
     allFileContents.split(/\r?\n/).forEach(line =>  {
         var textLine = line.split(' ');
-        console.log(`Line from file: ${textLine}`);
+        //console.log(`Line from file: ${textLine}`);
         for(let j = 0; j < textLine.length; j++){
             var Insert = [];
             if(i == 0){
@@ -131,7 +137,7 @@ function createPath(parent, current, value) {
     return {
         parent : parent,
         current: current,
-        value: value
+        value: Number(value)
     };
 };
 
@@ -147,14 +153,14 @@ function createGraphMap(graph){
     for(let i = 0; i < graph.length; i++){
         var current = graph[i];
         // First
-        if(graphMap[current[0]] == null){
-            graphMap[current[0]] = {};
+        if(graphMap[String(current[0])] == null){
+            graphMap[String(current[0])] = {};
         }
-        if(graphMap[current[1]] == null){
-            graphMap[current[1]] = {};
+        if(graphMap[String(current[1])] == null){
+            graphMap[String(current[1])] = {};
         }
-        graphMap[current[0]][current[1]] = current[2];
-        graphMap[current[1]][current[0]] = current[2];
+        graphMap[String(current[0])][String(current[1])] = Number(current[2]);
+        graphMap[String(current[1])][String(current[0])] = Number(current[2]);
     }
     console.log("GRAPH MAP");
     console.log(graphMap);
@@ -228,7 +234,7 @@ function result(start, end, graph, func, method){
 
         function possibleNodes(graphMap, currentNode){
             var possibilities = [];
-            var node = graphMap[currentNode];
+            var node = graphMap[String(currentNode)];
             for(var i in node){
                 possibilities.push({current: i, value: node[i]});
             }
@@ -239,14 +245,14 @@ function result(start, end, graph, func, method){
         var queue = [];
         queue.push(createPath(null, start, 0));
         var head = 0;
-        // console.log("START QUEUE");
-        // console.log(queue);
+        console.log("START QUEUE");
+        console.log(queue);
         var history = []
         //console.log(queue);
         while(queue.length > 0){
             var active = queue[0];
-            // console.log("CURRENTLY ACTIVE");
-            // console.log(active.current);
+            console.log("CURRENTLY ACTIVE");
+            console.log(active.current);
             queue.splice(0, 1);
             //head++;
 
@@ -263,12 +269,13 @@ function result(start, end, graph, func, method){
                 return active;
             }else{
                 var nextNodes = possibleNodes(graphMap, active.current);
-                // console.log("POSSIBLE NEXT");
-                // console.log(nextNodes);
+                console.log("POSSIBLE NEXT");
+                console.log(nextNodes);
                 //console.log(history);
                 for(let i = 0; i < nextNodes.length; i++){
                     if(!isExist(history, nextNodes[i])){
-                        enqueue(queue, createPath(active, nextNodes[i].current, nextNodes[i].value + active.value));
+
+                        enqueue(queue, createPath(active, nextNodes[i].current, Number(nextNodes[i].value + active.value)));
                     }
                     else{
                         //console.log(`${active.current} is already in history!`);
