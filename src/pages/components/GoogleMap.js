@@ -15,7 +15,12 @@ const getSimpangan = (elem) => {
         } else {
           mapNode.set(el.toString(), 1);
         }
-      })        
+      }) 
+      
+      // new google.maps.Polyline({
+      //   path : element['nodes'],
+      //   strokeOpacity : "#FF0000"
+      // })
     }
   });
 
@@ -29,6 +34,35 @@ const getSimpangan = (elem) => {
   )
   // console.log(mapNode)
   return mapNode.keys()
+}
+
+const drawLines = (arrOfSimpangan, nodes, map) => {
+  nodes.forEach(el => {
+    if (el['type'] == 'way') {
+      let coords = new Array()
+
+      el['nodes'].forEach(e => {
+        arrOfSimpangan.forEach(e1 => {
+          if (e == e1['id']) {
+            // console.log(e, e1['id'])
+            coords.push({ lat : e1['lat'], lng : e1['lon']})
+          }
+        })
+      })
+
+      // console.log(coords)
+
+      const pline = new google.maps.Polyline({
+        path: coords,
+        geodesic: true,
+        strokeColor: "#FF0000",
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+      });
+
+      pline.setMap(map)
+    }
+  })
 }
 
 const GoogleMap = () => {
@@ -52,10 +86,10 @@ const GoogleMap = () => {
       });
 
       map.addListener("click", async (mapsMouseEvent) => {
-        window.alert(mapsMouseEvent.latLng);
+        // window.alert(mapsMouseEvent.latLng);
         const bound = map.getBounds()
         
-        window.alert(bound.getNorthEast().lat())
+        // window.alert(bound.getNorthEast().lat())
         // window.alert(bound.toString())
           const response = await fetch(`https://api.openstreetmap.org/api/0.6/map.json?bbox=${bound.getSouthWest().lng()},${bound.getSouthWest().lat()},${bound.getNorthEast().lng()},${bound.getNorthEast().lat()}`);
           // const response = await fetch('https://master.apis.dev.openstreetmap.org/api/0.6/map.json?bbox=11.54,48.14,11.543,48.145');
@@ -75,13 +109,23 @@ const GoogleMap = () => {
 
           console.log(arrOfSimpangan)
 
-          arrOfSimpangan.slice(0, 21).forEach(e => {
-            new google.maps.Marker({
-              position: new google.maps.LatLng(e['lat'], e['lon']),
+          arrOfSimpangan.forEach(e => {
+            // new google.maps.Marker({
+            //   position: new google.maps.LatLng(e['lat'], e['lon']),
+            //   map,
+            //   title : `${e['user']}`
+            // })
+            new google.maps.Circle({
+              strokeWeight : 0,
+              fillColor : "#FF0F0F",
+              fillOpacity : 1,
               map,
-              title : `${e['user']}`
+              radius : 3,
+              center : new google.maps.LatLng(e['lat'], e['lon']),
             })
           })
+
+          drawLines(arrOfSimpangan, js['elements'], map)
       })
       
     });
