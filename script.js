@@ -40,6 +40,8 @@ var nodeNames = nameTest;
 var nodeCoordinates = [];
 var eucToGoal = eucToGoalTest;
 
+
+
 // Initialize information matrices
 var matrix = getMatrix('test.txt');
 console.log("MATRIX");
@@ -68,7 +70,7 @@ for(let i = 0; i < nodeNames.length; i++){
 //var goalCoor = nodeCoordinates[nodeNames.indexOf(goal)];
 
 var chosenMethod = prompt("What method do you want to use? ");
-result(begin, goal, matrix, createGraphMap, chosenMethod);
+compute(begin, goal, matrix, createGraphMap, chosenMethod);
 
 function euclidean(start, end){
     let Xelement = Math.pow(Math.abs(start.X - end.X), 2);
@@ -167,7 +169,7 @@ function createGraphMap(graph){
     return graphMap;
 }
 
-function compute(start, end, graphMap, func, method){
+function result(start, end, graphMap, func, method){
     function writeResult(resultPath){
         if(resultPath.parent != null){
             writeResult(resultPath.parent);
@@ -180,7 +182,7 @@ function compute(start, end, graphMap, func, method){
     writeResult(func(graphMap, start, end, method));
 }
 
-function result(start, end, graph, func, method){
+function compute(start, end, graph, func, method){
     function search(graphMap, start, end, method){
         function dequeue(array){
             var element = array[0];
@@ -289,6 +291,6 @@ function result(start, end, graph, func, method){
         }
     }
 
-    compute(start, end, func(graph), search, method);
+    result(start, end, func(graph), search, method);
 
 }
