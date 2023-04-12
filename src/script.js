@@ -44,8 +44,6 @@ var eucToGoal = eucToGoalTest;
 
 // Initialize information matrices
 var matrix = getMatrix('test.txt');
-console.log("MATRIX");
-console.log(matrix);
 var nodeNames = getNames('test.txt');
 var nodeCoordinates = [];
 var eucToGoal = {};
@@ -126,7 +124,7 @@ function getNames(filepath){
             var Insert = [];
             if(i == 0){
                 nameArray[j] = textLine[j];
-                console.log(nameArray);
+                // console.log(nameArray);
             }
         }
         i++;
@@ -164,8 +162,8 @@ function createGraphMap(graph){
         graphMap[String(current[0])][String(current[1])] = Number(current[2]);
         graphMap[String(current[1])][String(current[0])] = Number(current[2]);
     }
-    console.log("GRAPH MAP");
-    console.log(graphMap);
+    // console.log("GRAPH MAP");
+    // console.log(graphMap);
     return graphMap;
 }
 
@@ -247,14 +245,14 @@ function compute(start, end, graph, func, method){
         var queue = [];
         queue.push(createPath(null, start, 0));
         var head = 0;
-        console.log("START QUEUE");
-        console.log(queue);
+        // console.log("START QUEUE");
+        // console.log(queue);
         var history = []
         //console.log(queue);
         while(queue.length > 0){
             var active = queue[0];
-            console.log("CURRENTLY ACTIVE");
-            console.log(active.current);
+            // console.log("CURRENTLY ACTIVE");
+            // console.log(active.current);
             queue.splice(0, 1);
             //head++;
 
@@ -271,8 +269,8 @@ function compute(start, end, graph, func, method){
                 return active;
             }else{
                 var nextNodes = possibleNodes(graphMap, active.current);
-                console.log("POSSIBLE NEXT");
-                console.log(nextNodes);
+                // console.log("POSSIBLE NEXT");
+                // console.log(nextNodes);
                 //console.log(history);
                 for(let i = 0; i < nextNodes.length; i++){
                     if(!isExist(history, nextNodes[i])){
@@ -286,8 +284,8 @@ function compute(start, end, graph, func, method){
                 }
             }
 
-            console.log("QUEUE");
-            console.log(queue);
+            // console.log("QUEUE");
+            // console.log(queue);
         }
     }
 
