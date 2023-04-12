@@ -10,6 +10,9 @@ const getSimpangan = (elem) => {
   elem.forEach(element => {
     if (element['type'] == 'way') {
       element['nodes'].forEach(el => {
+        // if (el.toString() == "5024785997") {
+        //   console.log(mapNode.get(el.toString()))
+        // }
         if (typeof(mapNode.get(el.toString())) !== "undefined") {
           mapNode.set(el.toString(), mapNode.get(el.toString()) + 1);
         } else {
@@ -24,7 +27,7 @@ const getSimpangan = (elem) => {
     }
   });
 
-  // console.log(mapNode.entries())
+  console.log(mapNode)
   mapNode.forEach(
     (v, k) => {
       if (v <= 1){
@@ -32,6 +35,13 @@ const getSimpangan = (elem) => {
       }
     }
   )
+  console.log(mapNode)
+
+  mapNode.forEach(el => {
+    if (el.toString() == "5024785997") {
+        console.log(mapNode.get(el.toString()))
+      }
+    })
   // console.log(mapNode)
   return mapNode.keys()
 }
@@ -70,8 +80,8 @@ const drawLines = (arrOfSimpangan, nodes, map) => {
     }
   })
 
-  console.log("sebelum" + arrOfSimpangan.length)
-  console.log("sesudah" + nodesInLines.length)
+  // console.log("sebelum" + arrOfSimpangan.length)
+  // console.log("sesudah" + nodesInLines.length)
 
   return nodesInLines
 }
@@ -112,6 +122,13 @@ const drawNodes = (arrOfSimpangan, arrOfLines, map) => {
       }
     })
   })
+
+  arrOfSimpangan.forEach(el => {
+    
+    if (el['id'] == 5024785997) {
+        console.log('ini')
+      }
+    })
 }
 
 const GoogleMap = () => {
@@ -151,6 +168,7 @@ const GoogleMap = () => {
           for (const x of simpangan) {
             js['elements'].forEach(el => {
               if (el['type'] == 'node' && el['id'] == x) {
+                console.log(el['id'], x)
                 arrOfSimpangan.push(el)
               }
             })
