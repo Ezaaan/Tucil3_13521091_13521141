@@ -9,8 +9,8 @@ var testGraph = [
     ["mehadia"        , "drobeta"        , 75],
     ["drobeta"        , "craiova"        , 120],
     ["craiova"        , "pitesti"        , 138],
-    ["craiova"        , "rimnicu vilcea" , 146],
-    ["sibiu"          , "rimnicu vilcea" , 80],
+    ["craiova"        , "rimnicu_vilcea" , 146],
+    ["sibiu"          , "rimnicu_vilcea" , 80],
     ["rimnicu_vilcea" , "pitesti"        , 97],
     ["sibiu"          , "fagaras"        , 99],
     ["fagaras"        , "bucharest"      , 211],
@@ -25,12 +25,12 @@ var testGraph = [
 ];
 
 var nameTest = ["oradea", "zerind", "sibiu", "arad", "timisoara", "lugoj", "mehadia", "drobeta", 
-                "craiova", "pitesti", "rimnicu vilcea", "fagaras", "bucharest", "giurgiu", "urziceni",
+                "craiova", "pitesti", "rimnicu_vilcea", "fagaras", "bucharest", "giurgiu", "urziceni",
                 "hirsova", "eforie", "vaslui", "iasi", "neamt"];
 
 var eucToGoalTest = {"arad": 366, "bucharest": 0, "craiova": 160, "dobreta": 242, "eforie": 161, 
                     "fagaras": 176, "giurgiu": 77, "hirsova": 151, "iasi": 226, "lugoj": 244, "mehadia": 241,
-                    "neamt": 234, "oradea": 380, "pitesti": 10, "rimnicu vilcea": 193, "sibiu": 253, "timisoara": 329,
+                    "neamt": 234, "oradea": 380, "pitesti": 10, "rimnicu_vilcea": 193, "sibiu": 253, "timisoara": 329,
                     "urziceni": 80, "vaslui": 199, "zerind": 374};
 
 const prompt = require('prompt-sync')();
@@ -43,32 +43,32 @@ var eucToGoal = eucToGoalTest;
 
 
 // Initialize information matrices
-var matrix = getMatrix('test.txt');
-var nodeNames = getNames('test.txt');
-var nodeCoordinates = [];
-var eucToGoal = {};
+// var matrix = getMatrix('test.txt');
+// var nodeNames = getNames('test.txt');
+// var nodeCoordinates = [];
+// var eucToGoal = {};
 
 
 // Insert coordinates of all nodes
-for(let i = 0; i < nodeNames.length; i++){
-    var coorX = prompt(`Coordinate X of ${nodeNames[i]}: `);
-    var coorY = prompt(`Coordinate Y of ${nodeNames[i]}: `);
-    nodeCoordinates.push({name: nodeNames[i], X: Number(coorX), Y: Number(coorY)});
-}
+// for(let i = 0; i < nodeNames.length; i++){
+//     var coorX = prompt(`Coordinate X of ${nodeNames[i]}: `);
+//     var coorY = prompt(`Coordinate Y of ${nodeNames[i]}: `);
+//     nodeCoordinates.push({name: nodeNames[i], X: Number(coorX), Y: Number(coorY)});
+// }
 
 // Get begin and goal nodes
 var begin = prompt("Start node: ");
 var goal = prompt('Goal node: ');
 
 // Get array of euclidean distances to goal
-for(let i = 0; i < nodeNames.length; i++){
-    eucToGoal[nodeNames[i]] = euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)]);
-    //eucToGoal.push({name: nodeNames[i], euclidean: euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)])});
-}
+// for(let i = 0; i < nodeNames.length; i++){
+//     eucToGoal[nodeNames[i]] = euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)]);
+//     //eucToGoal.push({name: nodeNames[i], euclidean: euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)])});
+// }
 //var goalCoor = nodeCoordinates[nodeNames.indexOf(goal)];
 
 var chosenMethod = prompt("What method do you want to use? ");
-compute(begin, goal, matrix, createGraphMap, chosenMethod);
+compute(begin, goal, testGraph, createGraphMap, chosenMethod);
 
 function euclidean(start, end){
     let Xelement = Math.pow(Math.abs(start.X - end.X), 2);
