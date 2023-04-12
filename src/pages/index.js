@@ -4,6 +4,8 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 
 import Navbar from './components/Navbar'
+import GoogleMap from './components/GoogleMap'
+
 import { useState } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -26,6 +28,7 @@ export default function Home() {
         {/* <button onClick={() => {setNavShow(!navShow)}}>tombol!</button> */}
         <Navbar show={navShow} func={() => setNavShow(!navShow)}/> 
         
+        <GoogleMap />
         
       </main>
     </>
