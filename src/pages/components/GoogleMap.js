@@ -37,6 +37,8 @@ const getSimpangan = (elem) => {
 }
 
 const drawLines = (arrOfSimpangan, nodes, map) => {
+  let nodesInLines = new Array()
+
   nodes.forEach(el => {
     if (el['type'] == 'way') {
       let coords = new Array()
@@ -46,6 +48,10 @@ const drawLines = (arrOfSimpangan, nodes, map) => {
           if (e == e1['id']) {
             // console.log(e, e1['id'])
             coords.push({ lat : e1['lat'], lng : e1['lon']})
+
+            if (el['nodes'].length > 1 && !nodesInLines.includes(e)) {
+              nodesInLines.push(e)
+            }
           }
         })
       })
@@ -62,6 +68,49 @@ const drawLines = (arrOfSimpangan, nodes, map) => {
 
       pline.setMap(map)
     }
+  })
+
+  console.log("sebelum" + arrOfSimpangan.length)
+  console.log("sesudah" + nodesInLines.length)
+
+  return nodesInLines
+}
+
+const drawNodes = (arrOfSimpangan, arrOfLines, map) => {
+  arrOfSimpangan.forEach(e => {
+    arrOfLines.forEach(e1 => {
+      if (e['id'] == e1) {
+        // const contentStr = 
+        //   '<div>' +
+        //   '<h2>Node</h2> <br/>' +
+        //   `<div>${e['id']}</div>` +
+        //   '</div>'
+
+        const link = `https://www.openstreetmap.org/node/${e['id']}`
+
+        const info = new google.maps.InfoWindow({
+          content : link,
+          ariaLabel : "tes"
+        })
+
+        const circle = new google.maps.Circle({
+          strokeWeight : 0,
+          fillColor : "#FF0F0F",
+          fillOpacity : 1,
+          map,
+          radius : 2,
+          center : new google.maps.LatLng(e['lat'], e['lon']),
+        })
+
+        circle.addListener("click", () =>  {
+          window.alert(link)
+          info.open({
+            anchor : circle,
+            map,
+          })
+        })
+      }
+    })
   })
 }
 
@@ -109,23 +158,16 @@ const GoogleMap = () => {
 
           console.log(arrOfSimpangan)
 
-          arrOfSimpangan.forEach(e => {
-            // new google.maps.Marker({
-            //   position: new google.maps.LatLng(e['lat'], e['lon']),
-            //   map,
-            //   title : `${e['user']}`
-            // })
-            new google.maps.Circle({
-              strokeWeight : 0,
-              fillColor : "#FF0F0F",
-              fillOpacity : 1,
-              map,
-              radius : 3,
-              center : new google.maps.LatLng(e['lat'], e['lon']),
-            })
-          })
+          // arrOfSimpangan.forEach(e => {
+          //   // new google.maps.Marker({
+          //   //   position: new google.maps.LatLng(e['lat'], e['lon']),
+          //   //   map,
+          //   //   title : `${e['user']}`
+          //   // })
+          // })
 
-          drawLines(arrOfSimpangan, js['elements'], map)
+          const nodeInLines = drawLines(arrOfSimpangan, js['elements'], map)
+          drawNodes(arrOfSimpangan, nodeInLines, map)
       })
       
     });
