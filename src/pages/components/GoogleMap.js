@@ -3,6 +3,33 @@ import {Loader} from '@googlemaps/js-api-loader';
 
 import styles from '@/styles/GoogleMap.module.css'
 
+const getSimpangan = (elem) => {
+  // console.log(elem)
+  let mapNode = new Map();
+  elem.forEach(element => {
+    if (element['type'] == 'way') {
+      element['nodes'].forEach(el => {
+        if (typeof(mapNode.get(el.toString())) !== "undefined") {
+          mapNode.set(el.toString(), mapNode.get(el.toString()) + 1);
+        } else {
+          mapNode.set(el.toString(), 1);
+        }
+      })        
+    }
+  });
+
+  // console.log(mapNode.entries())
+  mapNode.forEach(
+    (v, k) => {
+      if (v <= 1){
+        mapNode.delete(k)
+      }
+    }
+  )
+  // console.log(mapNode)
+  return mapNode
+}
+
 const GoogleMap = () => {
 
   const googlemap = useRef(null);
@@ -29,10 +56,12 @@ const GoogleMap = () => {
         
         window.alert(bound.getNorthEast().lat())
         // window.alert(bound.toString())
-          const response = await fetch(`https://api.openstreetmap.org/api/0.6/map.json?bbox=${bound.getSouthWest().lng()},${bound.getSouthWest().lat()},${bound.getNorthEast().lng()},${bound.getNorthEast().lat()}`);
+          // const response = await fetch(`https://api.openstreetmap.org/api/0.6/map.json?bbox=${bound.getSouthWest().lng()},${bound.getSouthWest().lat()},${bound.getNorthEast().lng()},${bound.getNorthEast().lat()}`);
+          const response = await fetch('https://master.apis.dev.openstreetmap.org/api/0.6/map.json?bbox=11.54,48.14,11.543,48.145');
           console.log(response)
           const js = await response.json()
           console.log(js) // ambile elements
+          getSimpangan(js["elements"])
       })
       
     });
@@ -41,7 +70,7 @@ const GoogleMap = () => {
   });
 
   // const userAction = async () => {
-  //   const response = await fetch('https://master.apis.dev.openstreetmap.org/api/0.6/map.json?bbox=11.54,48.14,11.543,48.145');
+    // const response = await fetch('https://master.apis.dev.openstreetmap.org/api/0.6/map.json?bbox=11.54,48.14,11.543,48.145');
   //   console.log(response)
   //   const myJson = await response.json(); //extract JSON from the http response
   //   // do something with myJson
