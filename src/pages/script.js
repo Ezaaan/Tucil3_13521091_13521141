@@ -45,8 +45,19 @@ var matrix = getMatrix('test.txt');
 console.log("MATRIX");
 console.log(matrix);
 var nodeNames = getNames('test.txt');
+console.log(nodeNames)
 var nodeCoordinates = [];
+
 var eucToGoal = {};
+
+const getSolution = (matrix, nodeNames, nodeCoordinates, begin, goal, chosenMethod) => {
+    for(let i = 0; i < nodeNames.length; i++){
+        eucToGoal[nodeNames[i]] = euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)]);
+        //eucToGoal.push({name: nodeNames[i], euclidean: euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)])});
+    }    
+
+    result(begin, goal, matrix, createGraphMap, chosenMethod)
+}
 
 
 // Insert coordinates of all nodes
@@ -55,7 +66,7 @@ for(let i = 0; i < nodeNames.length; i++){
     var coorY = prompt(`Coordinate Y of ${nodeNames[i]}: `);
     nodeCoordinates.push({name: nodeNames[i], X: Number(coorX), Y: Number(coorY)});
 }
-
+console.log(nodeCoordinates)
 // Get begin and goal nodes
 var begin = prompt("Start node: ");
 var goal = prompt('Goal node: ');
@@ -66,6 +77,7 @@ for(let i = 0; i < nodeNames.length; i++){
     //eucToGoal.push({name: nodeNames[i], euclidean: euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)])});
 }
 //var goalCoor = nodeCoordinates[nodeNames.indexOf(goal)];
+console.log(eucToGoal)
 
 var chosenMethod = prompt("What method do you want to use? ");
 result(begin, goal, matrix, createGraphMap, chosenMethod);
@@ -292,3 +304,6 @@ function result(start, end, graph, func, method){
     compute(start, end, func(graph), search, method);
 
 }
+
+
+export default getSolution;

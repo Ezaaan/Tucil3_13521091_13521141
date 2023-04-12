@@ -156,7 +156,26 @@ const GoogleMap = () => {
         //https://master.apis.dev.openstreetmap.org/api/0.6/map?bbox=11.54,48.14,11.543,48.145
         //https://api.openstreetmap.org/api/0.6/map?bbox=107,-6,107.1,-5.9
         zoom: 17,
+        mapTypeId : "OSM"
       });
+
+      map.mapTypes.set("OSM", new google.maps.ImageMapType({
+          getTileUrl: function(coord, zoom) {
+              // "Wrap" x (longitude) at 180th meridian properly
+              // NB: Don't touch coord.x: because coord param is by reference, and changing its x property breaks something in Google's lib
+              var tilesPerGlobe = 1 << zoom;
+              var x = coord.x % tilesPerGlobe;
+              if (x < 0) {
+                  x = tilesPerGlobe+x;
+              }
+              // Wrap y (latitude) in a like manner if you want to enable vertical infinite scrolling
+
+              return "https://tile.openstreetmap.org/" + zoom + "/" + x + "/" + coord.y + ".png";
+          },
+          tileSize: new google.maps.Size(256, 256),
+          name: "OpenStreetMap",
+          maxZoom: 18
+      }));
 
       map.addListener("click", async (mapsMouseEvent) => {
         // window.alert(mapsMouseEvent.latLng);
