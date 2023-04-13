@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Loader} from '@googlemaps/js-api-loader';
 
 import styles from '@/styles/GoogleMap.module.css'
@@ -53,8 +53,40 @@ const getSimpangan = (elem) => {
   return result
 }
 
+
+
+const calculateDistance = (paths) => {
+  let lastPath;
+  let subMatDist = new Array()
+
+  const getEuclid = (a, b) => {
+    return Math.sqrt(Math.pow(Math.abs(a['lat'] - b['lat']), 2) + Math.pow(Math.abs(a['lon'] - b['lon']), 2))
+  }
+
+  paths.forEach(e => {
+    if (typeof(lastPath) == "undefined") {
+      lastPath = e 
+      return
+    }
+    
+    subMatDist.push([e['id'].toString(), lastPath['id'].toString(), getEuclid(e, lastPath).toString()])
+    lastPath = e
+  })
+
+  // console.log(subMatDist)
+  return subMatDist
+}
+
+const checkForNode = (pathsName, arr) => {
+  pathsName = pathsName.filter(e => !arr.includes(e))
+
+  return pathsName.map(e => e['id'].toString())
+}
+
 const drawLines = (arrOfSimpangan, nodes, map) => {
   let nodesInLines = new Array()
+  let edgeMatrix = new Array()
+  let nodeMatrix = new Array()
 
   nodes.forEach(el => {
     if (el['type'] == 'way') {
@@ -64,7 +96,7 @@ const drawLines = (arrOfSimpangan, nodes, map) => {
         arrOfSimpangan.forEach(e1 => {
           if (e == e1['id']) {
             // console.log(e, e1['id'])
-            coords.push({ lat : e1['lat'], lng : e1['lon']})
+            coords.push(e1)
 
             if (el['nodes'].length > 1 && !nodesInLines.includes(e)) {
               nodesInLines.push(e)
@@ -76,13 +108,23 @@ const drawLines = (arrOfSimpangan, nodes, map) => {
       // console.log(coords)
 
       const pline = new google.maps.Polyline({
-        path: coords,
+        path: coords.map(i => { 
+          return {lat : i['lat'], lng : i['lon']}
+        }),
         geodesic: true,
         strokeColor: "#FF0000",
         strokeOpacity: 1.0,
         strokeWeight: 2,
       });
 
+      if (coords.length > 1) {
+        edgeMatrix.push(...calculateDistance(coords))
+
+        nodeMatrix.push(...checkForNode(coords, nodeMatrix))
+      }
+
+      // console.log(coords)
+    
       pline.setMap(map)
     }
   })
@@ -90,10 +132,12 @@ const drawLines = (arrOfSimpangan, nodes, map) => {
   // console.log("sebelum" + arrOfSimpangan.length)
   // console.log("sesudah" + nodesInLines.length)
 
-  return nodesInLines
+  console.log(nodesInLines, edgeMatrix, nodeMatrix)
+  return {nodesInLines, edgeMatrix, nodeMatrix}
 }
 
 const drawNodes = (arrOfSimpangan, arrOfLines, map) => {
+  console.log(arrOfLines)
   arrOfSimpangan.forEach(e => {
     arrOfLines.forEach(e1 => {
       if (e['id'] == e1) {
@@ -139,8 +183,10 @@ const drawNodes = (arrOfSimpangan, arrOfLines, map) => {
 }
 
 const GoogleMap = () => {
-
   const googlemap = useRef(null);
+  let [definedNode, setDefinedNode] = useState();
+
+
   useEffect(() => {
     const loader = new Loader({
       apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY,
@@ -162,15 +208,11 @@ const GoogleMap = () => {
 
       map.mapTypes.set("OSM", new google.maps.ImageMapType({
           getTileUrl: function(coord, zoom) {
-              // "Wrap" x (longitude) at 180th meridian properly
-              // NB: Don't touch coord.x: because coord param is by reference, and changing its x property breaks something in Google's lib
               var tilesPerGlobe = 1 << zoom;
               var x = coord.x % tilesPerGlobe;
               if (x < 0) {
                   x = tilesPerGlobe+x;
               }
-              // Wrap y (latitude) in a like manner if you want to enable vertical infinite scrolling
-
               return "https://tile.openstreetmap.org/" + zoom + "/" + x + "/" + coord.y + ".png";
           },
           tileSize: new google.maps.Size(256, 256),
@@ -202,6 +244,7 @@ const GoogleMap = () => {
           }
 
           console.log("final : " + arrOfSimpangan)
+          // console.log(arrOfSimpangan[0])
 
           // arrOfSimpangan.forEach(e => {
           //   // new google.maps.Marker({
@@ -211,8 +254,13 @@ const GoogleMap = () => {
           //   // })
           // })
 
-          const nodeInLines = drawLines(arrOfSimpangan, js['elements'], map)
-          drawNodes(arrOfSimpangan, nodeInLines, map)
+          const {nodesInLines, edgeMatrix, nodeMatrix} = drawLines(arrOfSimpangan, js['elements'], map)
+  
+          console.log(nodesInLines, edgeMatrix, nodeMatrix)
+          drawNodes(arrOfSimpangan, nodesInLines, map)
+          
+          // setDefinedNode(arrOfSimpangan)
+          // console.log(definedNode)
       })
       
     });
