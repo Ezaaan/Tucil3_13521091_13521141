@@ -56,7 +56,8 @@ const getSolution = (matrix, nodeNames, nodeCoordinates, begin, goal, chosenMeth
         eucToGoal[nodeNames[i]] = euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)]);
         //eucToGoal.push({name: nodeNames[i], euclidean: euclidean(nodeCoordinates[nodeNames.indexOf(nodeNames[i])], nodeCoordinates[nodeNames.indexOf(goal)])});
     }    
-
+    console.log("DATA CHECK")
+    console.log(matrix, nodeNames, nodeCoordinates, begin, goal, chosenMethod)
     result(begin, goal, matrix, createGraphMap, chosenMethod)
 }
 

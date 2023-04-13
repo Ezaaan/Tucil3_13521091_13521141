@@ -3,6 +3,7 @@ import {Loader} from '@googlemaps/js-api-loader';
 
 import styles from '@/styles/GoogleMap.module.css'
 import * as OSM from "osm-api"
+import getSolution from '../script';
 
 const getSimpangan = (elem) => {
   // console.log(elem)
@@ -96,7 +97,7 @@ const getSimpangan = (elem) => {
 
 const calculateDistance = (paths) => {
   let lastPath;
-  let subMatDist = new Array()
+  let subMatDist = new Set()
 
   const getEuclid = (a, b) => {
     return Math.sqrt(Math.pow(Math.abs(a['lat'] - b['lat']), 2) + Math.pow(Math.abs(a['lon'] - b['lon']), 2))
@@ -108,24 +109,41 @@ const calculateDistance = (paths) => {
       return
     }
     
-    subMatDist.push([e['id'].toString(), lastPath['id'].toString(), getEuclid(e, lastPath).toString()])
+    subMatDist.add(
+        Number(e['id']) < Number(lastPath['id']) ?
+          [e['id'].toString(), lastPath['id'].toString(), getEuclid(e, lastPath).toString()]
+          :
+          [lastPath['id'].toString(), e['id'].toString(), getEuclid(e, lastPath).toString()]
+      )
     lastPath = e
   })
 
-  // console.log(subMatDist)
   return subMatDist
 }
 
-const checkForNode = (pathsName, set) => {
-  pathsName = pathsName.filter(e => !set.has(e))
+const getNodesName = (pathsName) => {
+  // pathsName = pathsName.filter(e => !set.has(e))
 
   return pathsName.map(e => e['id'].toString())
 }
 
+const getNodesCoord = (pathsName) => {
+  // pathsName = pathsName.filter(e => !set.has(e))
+
+  return pathsName.map(e => {
+      return { 
+        name : e['id'].toString(),
+        X : e['lon'],
+        Y : e['lat']
+      }
+    })
+}
+
 const drawLines = (arrOfSimpangan, nodes, map) => {
   let nodesInLines = new Array()
-  let edgeMatrix = new Array()
-  let nodeMatrix = new Set()
+  let edgeMatrix = new Set()
+  let nodesNameMatrix = new Set()
+  let nodesCoordMatrix = new Set()
 
   nodes.forEach(el => {
     if (el['type'] == 'way') {
@@ -157,9 +175,10 @@ const drawLines = (arrOfSimpangan, nodes, map) => {
       });
 
       if (coords.length > 1) {
-        edgeMatrix.push(...calculateDistance(coords))
+        edgeMatrix.add(...calculateDistance(coords))
 
-        nodeMatrix.add(...checkForNode(coords, nodeMatrix))
+        nodesNameMatrix.add(...getNodesName(coords))
+        nodesCoordMatrix.add(...getNodesCoord(coords))
       }
 
       // console.log(coords)
@@ -171,8 +190,13 @@ const drawLines = (arrOfSimpangan, nodes, map) => {
   // console.log("sebelum" + arrOfSimpangan.length)
   // console.log("sesudah" + nodesInLines.length)
 
-  console.log(nodesInLines, edgeMatrix, nodeMatrix)
-  return {nodesInLines, edgeMatrix, nodeMatrix}
+  console.log(nodesInLines, edgeMatrix, nodesNameMatrix)
+  return {
+    nodesInLines : nodesInLines, 
+    edgeMatrix : Array.from(edgeMatrix),
+    nodesNameMatrix : Array.from(nodesNameMatrix), 
+    nodesCoordMatrix : Array.from(nodesCoordMatrix)
+  }
 }
 
 const drawNodes = (arrOfSimpangan, arrOfLines, map) => {
@@ -298,10 +322,18 @@ const GoogleMap = () => {
           //   // })
           // })
 
-          const {nodesInLines, edgeMatrix, nodeMatrix} = drawLines(arrOfSimpangan, js['elements'], map)
+          const {nodesInLines, edgeMatrix, nodesNameMatrix, nodesCoordMatrix} = drawLines(arrOfSimpangan, js['elements'], map)
   
-          console.log(nodesInLines, edgeMatrix, nodeMatrix)
+          console.log(nodesInLines, edgeMatrix, nodesNameMatrix)
           drawNodes(arrOfSimpangan, nodesInLines, map)
+
+          getSolution(edgeMatrix, 
+            nodesNameMatrix,
+            nodesCoordMatrix,
+            nodesNameMatrix[0],
+            nodesNameMatrix[4],
+            'UCS'
+            )
           
           // setDefinedNode(arrOfSimpangan)
           // console.log(definedNode)
