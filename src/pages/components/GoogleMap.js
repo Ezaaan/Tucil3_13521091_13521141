@@ -9,10 +9,49 @@ const getSimpangan = (elem) => {
   let mapNode = new Map();
   elem.forEach(element => {
     if (element['type'] == 'way') {
+      // console.log(element['tags'])
+      if (!element.hasOwnProperty('tags') ||
+        (element.hasOwnProperty('tags') && 
+        !(
+          // (
+          //   element['tags'].hasOwnProperty('highway') && 
+          //   (
+          //     element['tags']['highway'] == 'footway' ||
+          //     element['tags']['highway'] == 'bridleway' ||
+          //     element['tags']['highway'] == 'steps' ||
+          //     element['tags']['highway'] == 'corridor' ||
+          //     element['tags']['highway'] == 'path' ||
+          //     element['tags']['highway'] == 'via_ferrata'
+          //   )
+          // )
+          //   || 
+          // (
+          //   element['tags'].hasOwnProperty('building') 
+          //   || element['tags'].hasOwnProperty('amenity') 
+          //   || element['tags'].hasOwnProperty('waterway')
+          //   || element['tags'].hasOwnProperty('leisure')
+          //   || element['tags'].hasOwnProperty('landuse')
+          // )
+          //   ||
+          // (
+          //   element['tags'].hasOwnProperty('natural') ||
+          //   element['tags'].hasOwnProperty('water') 
+          // )
+          element['tags'].hasOwnProperty('highway') && (
+            element['tags']['highway'] == 'motorway' ||
+            element['tags']['highway'] == 'trunk' ||
+            element['tags']['highway'] == 'primary' ||
+            element['tags']['highway'] == 'secondary' ||
+            element['tags']['highway'] == 'tertiary' ||
+            element['tags']['highway'] == 'unclassified' ||
+            element['tags']['highway'] == 'residential'
+          )
+        ))
+        ) {
+        return
+      }
+
       element['nodes'].forEach(el => {
-        // if (el.toString() == "5024785997") {
-        //   console.log(mapNode.get(el.toString()))
-        // }
         if (typeof(mapNode.get(el.toString())) !== "undefined" && element['nodes'].filter(x => x == el).length == 1) {
           mapNode.set(el.toString(), mapNode.get(el.toString()) + 1);
         } else {
@@ -77,8 +116,8 @@ const calculateDistance = (paths) => {
   return subMatDist
 }
 
-const checkForNode = (pathsName, arr) => {
-  pathsName = pathsName.filter(e => !arr.includes(e))
+const checkForNode = (pathsName, set) => {
+  pathsName = pathsName.filter(e => !set.has(e))
 
   return pathsName.map(e => e['id'].toString())
 }
@@ -86,7 +125,7 @@ const checkForNode = (pathsName, arr) => {
 const drawLines = (arrOfSimpangan, nodes, map) => {
   let nodesInLines = new Array()
   let edgeMatrix = new Array()
-  let nodeMatrix = new Array()
+  let nodeMatrix = new Set()
 
   nodes.forEach(el => {
     if (el['type'] == 'way') {
@@ -120,7 +159,7 @@ const drawLines = (arrOfSimpangan, nodes, map) => {
       if (coords.length > 1) {
         edgeMatrix.push(...calculateDistance(coords))
 
-        nodeMatrix.push(...checkForNode(coords, nodeMatrix))
+        nodeMatrix.add(...checkForNode(coords, nodeMatrix))
       }
 
       // console.log(coords)
@@ -217,7 +256,8 @@ const GoogleMap = () => {
           },
           tileSize: new google.maps.Size(256, 256),
           name: "OpenStreetMap",
-          maxZoom: 19.5
+          maxZoom: 19.5,
+          minZoom: 16
       }));
 
       map.addListener("dragend", async (mapsMouseEvent) => {
@@ -226,10 +266,12 @@ const GoogleMap = () => {
         
         // window.alert(bound.getNorthEast().lat())
         // window.alert(bound.toString())
-          const response = await fetch(`https://api.openstreetmap.org/api/0.6/map.json?bbox=${bound.getSouthWest().lng()},${bound.getSouthWest().lat()},${bound.getNorthEast().lng()},${bound.getNorthEast().lat()}`);
+        console.log('fetching data ...')
+          const response = await fetch(`https://api.openstreetmap.org/api/0.6/map.json?bbox=${bound.getSouthWest().lng()},${bound.getSouthWest().lat()},${bound.getNorthEast().lng()},${bound.getNorthEast().lat()}`)
+          
           // const response = await fetch('https://master.apis.dev.openstreetmap.org/api/0.6/map.json?bbox=11.54,48.14,11.543,48.145');
           console.log(response)
-          const js = await response.json()
+          const js = await response.json().then(console.log('data fetched.'));
           console.log(js) // ambile elements
           const simpangan = getSimpangan(js["elements"])
 
@@ -242,6 +284,8 @@ const GoogleMap = () => {
               }
             })
           }
+
+          console.log('calculatiion done')
 
           console.log("final : " + arrOfSimpangan)
           // console.log(arrOfSimpangan[0])
