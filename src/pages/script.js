@@ -75,10 +75,10 @@ const getSolution = (matrix, nodeNames, nodeCoordinates, begin, goal, chosenMeth
 
 // Get array of euclidean distances to goal
 
-//var goalCoor = nodeCoordinates[nodeNames.indexOf(goal)];
+// var goalCoor = nodeCoordinates[nodeNames.indexOf(goal)];
 // console.log(eucToGoal)
 
-// var chosenMethod = prompt("What method do you want to use? ");
+// var chosenMethodINPU = prompt("What method do you want to use? ");
 // result(begin, goal, matrix, createGraphMap, chosenMethod);
 
 function euclidean(start, end){
@@ -180,6 +180,8 @@ function createGraphMap(graph){
 
 function compute(start, end, graphMap, func, method){
     function writeResult(resultPath){
+        console.log('agola',aGOl)
+        console.log(resultPath)
         if(resultPath.parent != null){
             writeResult(resultPath.parent);
             console.log(" => " + resultPath.current + "(" + resultPath.value + ")");
@@ -190,6 +192,8 @@ function compute(start, end, graphMap, func, method){
 
     writeResult(func(graphMap, start, end, method));
 }
+
+let aGOl = new Array()
 
 function result(start, end, graph, func, method){
     function search(graphMap, start, end, method){
@@ -210,13 +214,13 @@ function result(start, end, graph, func, method){
             }else{
                 var pos = -1;
                 for(let i = 0; i < array.length; i++){
-                    if(chosenMethod == "UCS" && array[i].value > element.value){
+                    if(method == "UCS" && array[i].value > element.value){
                         pos = i;
                         break;
                     }
                     
                     // Diganti euclidean
-                    else if(chosenMethod == "A*" && array[i].value + eucToGoal[array[i].current] > element.value + eucToGoal[element.current]){
+                    else if(method == "A*" && array[i].value + eucToGoal[array[i].current] > element.value + eucToGoal[element.current]){
                         
                         //console.log(`${element.current} is more little than ${array[i].current} because`);
                         //console.log(`${element.value + eucToGoal[element.current]} < ${array[i].value + eucToGoal[array[i].current]}`);

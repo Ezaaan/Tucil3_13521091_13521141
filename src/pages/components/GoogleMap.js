@@ -200,7 +200,7 @@ const drawLines = (arrOfSimpangan, nodes, map) => {
 }
 
 const drawNodes = (arrOfSimpangan, arrOfLines, map) => {
-  console.log(arrOfLines)
+  // console.log(arrOfLines)
   arrOfSimpangan.forEach(e => {
     arrOfLines.forEach(e1 => {
       if (e['id'] == e1) {
@@ -226,6 +226,10 @@ const drawNodes = (arrOfSimpangan, arrOfLines, map) => {
           center : new google.maps.LatLng(e['lat'], e['lon']),
         })
 
+        
+
+        // console.log('snode1', e['id'], e['lat'], e['lon'])
+
         circle.addListener("click", () =>  {
           window.alert(link)
           info.open({
@@ -236,13 +240,31 @@ const drawNodes = (arrOfSimpangan, arrOfLines, map) => {
       }
     })
   })
+}
 
-  arrOfSimpangan.forEach(el => {
-    
-    if (el['id'] == 5024785997) {
-        // console.log('ini')
-      }
-    })
+const drawStart = (startNode, map, i) => {
+  
+  // console.log('snode', startNode['name'], startNode['Y'], startNode['X'])
+  
+  const z = new window.google.maps.Circle({
+    strokeWeight : 0,
+    fillColor : `#0000FF`,
+    fillOpacity : 1,
+    map : map,
+    radius : 8,
+    center : new google.maps.LatLng(startNode['Y'], startNode['X']),
+  });
+  
+
+  z.addListener("click", () =>  {
+    window.alert(i)
+    info.open({
+      anchor : circle,
+      map,
+    });
+  })
+
+  
 }
 
 const GoogleMap = () => {
@@ -325,15 +347,23 @@ const GoogleMap = () => {
           const {nodesInLines, edgeMatrix, nodesNameMatrix, nodesCoordMatrix} = drawLines(arrOfSimpangan, js['elements'], map)
   
           console.log(nodesInLines, edgeMatrix, nodesNameMatrix)
+          // drawStart(nodesCoordMatrix[0], map)
           drawNodes(arrOfSimpangan, nodesInLines, map)
 
+          for(let i = 0; i < 2; i++) {
+            drawStart(nodesCoordMatrix[i], map, i)
+          }          
+
+          
           getSolution(edgeMatrix, 
             nodesNameMatrix,
             nodesCoordMatrix,
             nodesNameMatrix[0],
-            nodesNameMatrix[4],
-            'UCS'
+            nodesNameMatrix[1],
+            'A*'
             )
+          
+          
           
           // setDefinedNode(arrOfSimpangan)
           // console.log(definedNode)
